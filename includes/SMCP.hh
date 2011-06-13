@@ -10,5 +10,6 @@
 
 #include "SMCPCommandMessage.hh"
 #include "SMCPTelemetryMessage.hh"
+#include "SMCPUtility.hh"
 
 #endif /* SMCP_HH_ */

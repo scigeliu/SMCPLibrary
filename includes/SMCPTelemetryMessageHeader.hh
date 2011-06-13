@@ -60,14 +60,14 @@ public:
 
 		ss << "=== Command Message Header ===" << endl;
 
-		ss << "SMCP Version       = " << smcpVersion.to_string() << "b" << endl;
-
 		ss << "Reserved           = " << reserved.to_string() << "b ";
 		if (reserved.to_ulong() != ReservedFieldValue) {
 			ss << "(Undefined value)" << endl;
 		} else {
 			ss << "(Reserved)" << endl;
 		}
+
+		ss << "SMCP Version       = " << smcpVersion.to_string() << "b" << endl;
 
 		ss << "TelemetryTypeID    = " << telemetryTypeID.to_string() << "b ";
 		switch (telemetryTypeID.to_ulong()) {
@@ -98,8 +98,8 @@ public:
 	std::vector<unsigned char> getAsByteVector() {
 		std::vector<unsigned char> result;
 		result.push_back( //
-				reserved.to_ulong() * 0x1000000 //
-						+ smcpVersion.to_ulong() * 0x10000 //
+				reserved.to_ulong() * 0x40 //
+						+ smcpVersion.to_ulong() * 0x10 //
 						+ telemetryTypeID.to_ulong() //
 		);
 		result.push_back(messageLength[0]);

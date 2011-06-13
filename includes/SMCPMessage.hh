@@ -28,10 +28,12 @@ public:
 	SMCPMessageData* data;
 
 public:
-	std::vector<unsigned char> getAsByteVector() {
+	std::vector<unsigned char> getAsByteVector(){
 		std::vector<unsigned char> result;
-		result.insert(result.end(), header->getAsByteVector().begin(), header->getAsByteVector().end());
-		result.insert(result.end(), data->getAsByteVector().begin(), data->getAsByteVector().end());
+		std::vector<unsigned char> headerVector=header->getAsByteVector();
+		std::vector<unsigned char> dataVector=data->getAsByteVector();
+		result.insert(result.end(),headerVector.begin(),headerVector.end());
+		result.insert(result.end(),dataVector.begin(),dataVector.end());
 		return result;
 	}
 

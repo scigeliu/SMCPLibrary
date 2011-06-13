@@ -13,6 +13,7 @@
 #include <iomanip>
 #include "SMCPMessageHeader.hh"
 #include "SMCPException.hh"
+#include "SMCPUtility.hh"
 
 class SMCPAcknowledgeRequest {
 public:
@@ -65,8 +66,6 @@ public:
 
 		ss << "=== Command Message Header ===" << endl;
 
-		ss << "SMCP Version       = " << smcpVersion.to_string() << "b" << endl;
-
 		ss << "AcknowledgeRequest = " << acknowledgeRequest.to_string() << "b ";
 		if (acknowledgeRequest.to_ulong() == SMCPAcknowledgeRequest::NoAcknowledgeTelemetry) {
 			ss << "(NoAcknowledgeTelemetry)" << endl;
@@ -75,6 +74,8 @@ public:
 		} else {
 			ss << "(Undefined value)" << endl;
 		}
+
+		ss << "SMCP Version       = " << smcpVersion.to_string() << "b" << endl;
 
 		ss << "CommandTypeID      = " << commandTypeID.to_string() << "b ";
 		switch (commandTypeID.to_ulong()) {
@@ -104,9 +105,9 @@ public:
 	std::vector<unsigned char> getAsByteVector() {
 		std::vector<unsigned char> result;
 		result.push_back( //
-				acknowledgeRequest.to_ulong() * 0x1000000 //
-						+ smcpVersion.to_ulong() * 0x10000 //
-						+ commandTypeID.to_ulong() //
+				((unsigned char)acknowledgeRequest.to_ulong()) * 0x40 //
+						+ ((unsigned char)smcpVersion.to_ulong()) * 0x10 //
+						+ (unsigned char)(commandTypeID.to_ulong()) //
 		);
 		result.push_back(lowerFOID);
 		return result;
@@ -175,8 +176,20 @@ public:
 		return smcpVersion;
 	}
 
+	void setAcknowledgeRequest(std::bitset<2> acknowledgeRequest) {
+		this->acknowledgeRequest=acknowledgeRequest;
+	}
+
+	void setAcknowledgeRequest(std::string value){
+		this->acknowledgeRequest=SMCPUtility::createBitset<2>(value);
+	}
+
 	void setCommandTypeID(std::bitset<4> commandTypeID) {
 		this->commandTypeID = commandTypeID;
+	}
+
+	void setCommandTypeID(std::string value){
+		this->commandTypeID=SMCPUtility::createBitset<4>(value);
 	}
 
 	void setLowerFOID(unsigned char lowerFOID) {

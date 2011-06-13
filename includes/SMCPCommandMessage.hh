@@ -39,14 +39,6 @@ public:
 	}
 
 public:
-	std::vector<unsigned char> getAsByteVector(){
-		std::vector<unsigned char> result;
-		result.insert(result.end(),header->getAsByteVector().begin(),header->getAsByteVector().end());
-		result.insert(result.end(),data->getAsByteVector().begin(),data->getAsByteVector().end());
-		return result;
-	}
-
-public:
 	void interpretAsCommandMessage(unsigned char* data, unsigned int length) {
 		if (length < SMCPCommandMessageHeader::HeaderLength) {
 			throw SMCPException("size error");
