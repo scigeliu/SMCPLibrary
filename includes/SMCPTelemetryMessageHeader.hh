@@ -88,7 +88,8 @@ public:
 			break;
 		}
 
-		ss << "MessageLength      = " << (unsigned int)(messageLength[2]*0x10000+messageLength[1]*0x100+messageLength[0]) << " bytes (decial)" << std::right << endl;
+		ss << "MessageLength      = " << (unsigned int) (messageLength[2] * 0x10000 + messageLength[1] * 0x100
+				+ messageLength[0]) << " bytes (decial)" << std::right << endl;
 
 		ss << "lowerFOID          = 0x" << hex << setw(2) << setfill('0') << (unsigned int) lowerFOID << dec << endl;
 		return ss.str();
@@ -114,13 +115,13 @@ public:
 	 */
 	void setMessageHeader(unsigned char* data) {
 		unsigned int index = 0;
-		reserved.set(1, data[0] & 0x80 /* 1000 0000 */);
-		reserved.set(0, data[0] & 0x40 /* 0100 0000 */);
-		smcpVersion.set(1, data[0] & 0x20 /* 0010 0000 */);
-		smcpVersion.set(0, data[0] & 0x10 /* 0001 0000 */);
-		telemetryTypeID.set(3, data[0] & 0x08 /* 0000 1000 */);
-		telemetryTypeID.set(2, data[0] & 0x04 /* 0000 0100 */);
-		telemetryTypeID.set(1, data[0] & 0x02 /* 0000 0010 */);
+		reserved.set(1, (data[0] & 0x80) >> 8 /* 1000 0000 */);
+		reserved.set(0, (data[0] & 0x40) >> 6 /* 0100 0000 */);
+		smcpVersion.set(1, (data[0] & 0x20) >> 5 /* 0010 0000 */);
+		smcpVersion.set(0, (data[0] & 0x10) >> 4 /* 0001 0000 */);
+		telemetryTypeID.set(3, (data[0] & 0x08) >> 3 /* 0000 1000 */);
+		telemetryTypeID.set(2, (data[0] & 0x04) >> 2 /* 0000 0100 */);
+		telemetryTypeID.set(1, (data[0] & 0x02) >> 1 /* 0000 0010 */);
 		telemetryTypeID.set(0, data[0] & 0x01 /* 0000 0001 */);
 		index += 1;
 		for (unsigned int i = 0; index < 4; index++, i++) {

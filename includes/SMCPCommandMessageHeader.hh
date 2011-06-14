@@ -96,7 +96,7 @@ public:
 			break;
 		}
 
-		ss << "lowerFOID          = 0x" << hex << setw(2) << setfill('0') << (unsigned int)lowerFOID << dec << endl;
+		ss << "lowerFOID          = 0x" << hex << setw(2) << setfill('0') << (unsigned int) lowerFOID << dec << endl;
 
 		return ss.str();
 	}
@@ -105,9 +105,9 @@ public:
 	std::vector<unsigned char> getAsByteVector() {
 		std::vector<unsigned char> result;
 		result.push_back( //
-				((unsigned char)acknowledgeRequest.to_ulong()) * 0x40 //
-						+ ((unsigned char)smcpVersion.to_ulong()) * 0x10 //
-						+ (unsigned char)(commandTypeID.to_ulong()) //
+				((unsigned char) acknowledgeRequest.to_ulong()) * 0x40 //
+						+ ((unsigned char) smcpVersion.to_ulong()) * 0x10 //
+						+ (unsigned char) (commandTypeID.to_ulong()) //
 		);
 		result.push_back(lowerFOID);
 		return result;
@@ -115,13 +115,13 @@ public:
 
 public:
 	void setMessageHeader(unsigned char* data) {
-		acknowledgeRequest.set(1, data[0] & 0x80 /* 1000 0000 */);
-		acknowledgeRequest.set(0, data[0] & 0x40 /* 0100 0000 */);
-		smcpVersion.set(1, data[0] & 0x20 /* 0010 0000 */);
-		smcpVersion.set(0, data[0] & 0x10 /* 0001 0000 */);
-		commandTypeID.set(3, data[0] & 0x08 /* 0000 1000 */);
-		commandTypeID.set(2, data[0] & 0x04 /* 0000 0100 */);
-		commandTypeID.set(1, data[0] & 0x02 /* 0000 0010 */);
+		acknowledgeRequest.set(1, (data[0] & 0x80) >> 8 /* 1000 0000 */);
+		acknowledgeRequest.set(0, (data[0] & 0x40) >> 6 /* 0100 0000 */);
+		smcpVersion.set(1, (data[0] & 0x20) >> 5 /* 0010 0000 */);
+		smcpVersion.set(0, (data[0] & 0x10) >> 4 /* 0001 0000 */);
+		commandTypeID.set(3, (data[0] & 0x08) >> 3 /* 0000 1000 */);
+		commandTypeID.set(2, (data[0] & 0x04) >> 2 /* 0000 0100 */);
+		commandTypeID.set(1, (data[0] & 0x02) >> 1 /* 0000 0010 */);
 		commandTypeID.set(0, data[0] & 0x01 /* 0000 0001 */);
 		lowerFOID = data[1];
 	}
@@ -177,19 +177,19 @@ public:
 	}
 
 	void setAcknowledgeRequest(std::bitset<2> acknowledgeRequest) {
-		this->acknowledgeRequest=acknowledgeRequest;
+		this->acknowledgeRequest = acknowledgeRequest;
 	}
 
-	void setAcknowledgeRequest(std::string value){
-		this->acknowledgeRequest=SMCPUtility::createBitset<2>(value);
+	void setAcknowledgeRequest(std::string value) {
+		this->acknowledgeRequest = SMCPUtility::createBitset<2>(value);
 	}
 
 	void setCommandTypeID(std::bitset<4> commandTypeID) {
 		this->commandTypeID = commandTypeID;
 	}
 
-	void setCommandTypeID(std::string value){
-		this->commandTypeID=SMCPUtility::createBitset<4>(value);
+	void setCommandTypeID(std::string value) {
+		this->commandTypeID = SMCPUtility::createBitset<4>(value);
 	}
 
 	void setLowerFOID(unsigned char lowerFOID) {
