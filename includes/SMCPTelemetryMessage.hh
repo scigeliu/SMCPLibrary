@@ -23,20 +23,21 @@
  * [Attribute ID 2octets]
  * [Attribute Value *octets]
  */
-class SMCPTelemetryMessage : public SMCPMessage {
+class SMCPTelemetryMessage: public SMCPMessage {
 public:
-	SMCPTelemetryMessage() : SMCPMessage(){
+	SMCPTelemetryMessage() :
+		SMCPMessage() {
 		header = new SMCPTelemetryMessageHeader();
 		data = new SMCPTelemetryMessageData();
 	}
 
-	virtual ~SMCPTelemetryMessage(){
+	virtual ~SMCPTelemetryMessage() {
 		delete header;
 		delete data;
 	}
 
 public:
-	std::string toString(){
+	std::string toString() {
 		std::stringstream ss;
 		using std::endl;
 		ss << "---------------------------------" << endl;
@@ -50,12 +51,13 @@ public:
 
 public:
 	void interpretAsTelemetryMessage(unsigned char* data, unsigned int length) {
-		if (length < SMCPTelemetryMessageHeader::HeaderLength+1) {
+		if (length < SMCPTelemetryMessageHeader::HeaderLength + 1) {
 			throw SMCPException("size error");
 		}
 
 		header->setMessageHeader(data);
-		this->data->setMessageData(data+SMCPTelemetryMessageHeader::HeaderLength,length-SMCPTelemetryMessageHeader::HeaderLength);
+		this->data->setMessageData(data + SMCPTelemetryMessageHeader::HeaderLength, length
+				- SMCPTelemetryMessageHeader::HeaderLength);
 	}
 
 	void interpretAsTelemetryMessage(std::vector<unsigned char> data) {
@@ -79,20 +81,20 @@ public:
 	void setMessageLengthAuto() {
 		unsigned char messageLength[3];
 		unsigned int length = 4; //header
-		length += ((SMCPTelemetryMessageData*)data)->getLength();
+		length += ((SMCPTelemetryMessageData*) data)->getLength();
 		messageLength[0] = (length % 0x1000000) / 0x10000;
 		messageLength[1] = (length % 0x10000) / 0x100;
 		messageLength[2] = (length % 0x100) / 0x1;
-		((SMCPTelemetryMessageHeader*)header)->setMessageLength(messageLength);
+		((SMCPTelemetryMessageHeader*) header)->setMessageLength(messageLength);
 	}
 
 public:
 	SMCPTelemetryMessageHeader* getMessageHeader() const {
-		return (SMCPTelemetryMessageHeader*)header;
+		return (SMCPTelemetryMessageHeader*) header;
 	}
 
 	SMCPTelemetryMessageData* getMessageData() const {
-		return (SMCPTelemetryMessageData*)data;
+		return (SMCPTelemetryMessageData*) data;
 	}
 
 	void setMessageHeader(SMCPTelemetryMessageHeader* header) {
@@ -105,36 +107,38 @@ public:
 		this->data = data;
 	}
 
-
 };
 
-class SMCPValueTelemetryMessage : public SMCPTelemetryMessage {
+class SMCPValueTelemetryMessage: public SMCPTelemetryMessage {
 public:
-	SMCPValueTelemetryMessage() : SMCPTelemetryMessage() {
+	SMCPValueTelemetryMessage() :
+		SMCPTelemetryMessage() {
 		this->getMessageHeader()->setTelemetryTypeID(SMCPTelemetryTypeID::ValueTelemetry);
 	}
 };
 
-class SMCPNotificationTelemetryMessage : public SMCPTelemetryMessage {
+class SMCPNotificationTelemetryMessage: public SMCPTelemetryMessage {
 public:
-	SMCPNotificationTelemetryMessage() : SMCPTelemetryMessage() {
+	SMCPNotificationTelemetryMessage() :
+		SMCPTelemetryMessage() {
 		this->getMessageHeader()->setTelemetryTypeID(SMCPTelemetryTypeID::NotificationTelemetry);
 	}
 };
 
-class SMCPAcknowledgeTelemetryMessage : public SMCPTelemetryMessage {
+class SMCPAcknowledgeTelemetryMessage: public SMCPTelemetryMessage {
 public:
-	SMCPAcknowledgeTelemetryMessage() : SMCPTelemetryMessage() {
+	SMCPAcknowledgeTelemetryMessage() :
+		SMCPTelemetryMessage() {
 		this->getMessageHeader()->setTelemetryTypeID(SMCPTelemetryTypeID::AcknowledgeTelemetry);
 	}
 };
 
-class SMCPMemoryDumpTelemetryMessage : public SMCPTelemetryMessage {
+class SMCPMemoryDumpTelemetryMessage: public SMCPTelemetryMessage {
 public:
-	SMCPMemoryDumpTelemetryMessage() : SMCPTelemetryMessage() {
+	SMCPMemoryDumpTelemetryMessage() :
+		SMCPTelemetryMessage() {
 		this->getMessageHeader()->setTelemetryTypeID(SMCPTelemetryTypeID::MemoryDumpTelemetry);
 	}
 };
-
 
 #endif /* SMCPTELEMETRYMESSAGE_HH_ */

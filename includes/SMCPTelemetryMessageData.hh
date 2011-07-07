@@ -140,18 +140,18 @@ public:
 		this->attachment = attachment;
 	}
 
-	void setAttributeID(std::vector<unsigned char> attributeID) throw(SMCPException){
+	void setAttributeID(std::vector<unsigned char> attributeID) throw (SMCPException) {
 		if (attributeID.size() == 2) {
 			this->attributeID[0] = attributeID[0];
 			this->attributeID[1] = attributeID[1];
-		}else{
+		} else {
 			throw SMCPException("size error");
 		}
 	}
 
 	void setAttributeID(unsigned int attributeID) {
-		this->attributeID[0] = attributeID/0x100;
-		this->attributeID[1] = attributeID%0x100;
+		this->attributeID[0] = attributeID / 0x100;
+		this->attributeID[1] = attributeID % 0x100;
 	}
 
 	void setAttributeID(unsigned char* attributeID) {

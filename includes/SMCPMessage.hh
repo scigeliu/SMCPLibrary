@@ -28,27 +28,27 @@ public:
 	SMCPMessageData* data;
 
 public:
-	std::vector<unsigned char> getAsByteVector(){
+	std::vector<unsigned char> getAsByteVector() {
 		std::vector<unsigned char> result;
-		std::vector<unsigned char> headerVector=header->getAsByteVector();
-		std::vector<unsigned char> dataVector=data->getAsByteVector();
-		result.insert(result.end(),headerVector.begin(),headerVector.end());
-		result.insert(result.end(),dataVector.begin(),dataVector.end());
+		std::vector<unsigned char> headerVector = header->getAsByteVector();
+		std::vector<unsigned char> dataVector = data->getAsByteVector();
+		result.insert(result.end(), headerVector.begin(), headerVector.end());
+		result.insert(result.end(), dataVector.begin(), dataVector.end());
 		return result;
 	}
 
 public:
 	virtual std::string toString() = 0;
 
-	virtual void dump(std::ostream& os){
+	virtual void dump(std::ostream& os) {
 		os << this->toString();
 	}
 
-	virtual void dump(std::ostream* os){
+	virtual void dump(std::ostream* os) {
 		*os << this->toString();
 	}
 
-	virtual void dumpToScreen(){
+	virtual void dumpToScreen() {
 		dump(std::cout);
 	}
 };

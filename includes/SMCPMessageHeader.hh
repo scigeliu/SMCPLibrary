@@ -24,10 +24,10 @@ protected:
 	std::bitset<2> smcpVersion; //2 bit
 
 public:
-	void setDefaultValues(){
+	void setDefaultValues() {
 		//smcpVersion = 0x01 (00b) fix
-		smcpVersion.set(1,0);
-		smcpVersion.set(0,1);
+		smcpVersion.set(1, 0);
+		smcpVersion.set(0, 1);
 	}
 
 public:
@@ -42,7 +42,7 @@ public:
 
 	virtual bool equals(SMCPMessageHeader* header) =0;
 
-	virtual bool equals(SMCPMessageHeader& header){
+	virtual bool equals(SMCPMessageHeader& header) {
 		equals(&header);
 	}
 

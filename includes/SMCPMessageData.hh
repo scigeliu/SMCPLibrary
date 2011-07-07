@@ -34,7 +34,7 @@ public:
 
 	virtual bool equals(SMCPMessageData* data) =0;
 
-	virtual bool equals(SMCPMessageData& data){
+	virtual bool equals(SMCPMessageData& data) {
 		equals(&data);
 	}
 
@@ -50,8 +50,8 @@ public:
 		return maximumDumpLength;
 	}
 
-	void setMaximumDumpLength(unsigned int maximumDumpLength){
-		this->maximumDumpLength=maximumDumpLength;
+	void setMaximumDumpLength(unsigned int maximumDumpLength) {
+		this->maximumDumpLength = maximumDumpLength;
 	}
 
 };

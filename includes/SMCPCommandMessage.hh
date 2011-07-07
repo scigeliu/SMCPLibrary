@@ -12,21 +12,22 @@
 #include "SMCPCommandMessageHeader.hh"
 #include "SMCPCommandMessageData.hh"
 
-class SMCPCommandMessage : public SMCPMessage {
+class SMCPCommandMessage: public SMCPMessage {
 
 public:
-	SMCPCommandMessage() : SMCPMessage(){
+	SMCPCommandMessage() :
+		SMCPMessage() {
 		header = new SMCPCommandMessageHeader();
 		data = new SMCPCommandMessageData();
 	}
 
-	virtual ~SMCPCommandMessage(){
+	virtual ~SMCPCommandMessage() {
 		delete header;
 		delete data;
 	}
 
 public:
-	std::string toString(){
+	std::string toString() {
 		std::stringstream ss;
 		using std::endl;
 		ss << "---------------------------------" << endl;
@@ -45,7 +46,8 @@ public:
 		}
 
 		header->setMessageHeader(data);
-		this->data->setMessageData(data+SMCPCommandMessageHeader::HeaderLength,length-SMCPCommandMessageHeader::HeaderLength);
+		this->data->setMessageData(data + SMCPCommandMessageHeader::HeaderLength, length
+				- SMCPCommandMessageHeader::HeaderLength);
 	}
 
 	void interpretAsCommandMessage(std::vector<unsigned char> data) {
@@ -67,11 +69,11 @@ public:
 
 public:
 	SMCPCommandMessageHeader* getMessageHeader() {
-		return (SMCPCommandMessageHeader*)header;
+		return (SMCPCommandMessageHeader*) header;
 	}
 
 	SMCPCommandMessageData* getMessageData() {
-		return (SMCPCommandMessageData*)data;
+		return (SMCPCommandMessageData*) data;
 	}
 
 	void setMessageHeader(SMCPCommandMessageHeader* header) {
@@ -85,30 +87,34 @@ public:
 	}
 };
 
-class SMCPActionCommandMessage : public SMCPCommandMessage {
+class SMCPActionCommandMessage: public SMCPCommandMessage {
 public:
-	SMCPActionCommandMessage() : SMCPCommandMessage() {
+	SMCPActionCommandMessage() :
+		SMCPCommandMessage() {
 		this->getMessageHeader()->setCommandTypeID(SMCPCommandTypeID::ActionCommand);
 	}
 };
 
-class SMCPGetCommandMessage : public SMCPCommandMessage {
+class SMCPGetCommandMessage: public SMCPCommandMessage {
 public:
-	SMCPGetCommandMessage() : SMCPCommandMessage() {
+	SMCPGetCommandMessage() :
+		SMCPCommandMessage() {
 		this->getMessageHeader()->setCommandTypeID(SMCPCommandTypeID::GetCommand);
 	}
 };
 
-class SMCPMemoryLoadCommandMessage : public SMCPCommandMessage {
+class SMCPMemoryLoadCommandMessage: public SMCPCommandMessage {
 public:
-	SMCPMemoryLoadCommandMessage() : SMCPCommandMessage() {
+	SMCPMemoryLoadCommandMessage() :
+		SMCPCommandMessage() {
 		this->getMessageHeader()->setCommandTypeID(SMCPCommandTypeID::MemoryLoadCommand);
 	}
 };
 
-class SMCPMemoryDumpCommandMessage : public SMCPCommandMessage {
+class SMCPMemoryDumpCommandMessage: public SMCPCommandMessage {
 public:
-	SMCPMemoryDumpCommandMessage() : SMCPCommandMessage() {
+	SMCPMemoryDumpCommandMessage() :
+		SMCPCommandMessage() {
 		this->getMessageHeader()->setCommandTypeID(SMCPCommandTypeID::MemoryDumpCommand);
 	}
 };

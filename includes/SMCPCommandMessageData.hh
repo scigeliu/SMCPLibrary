@@ -50,7 +50,7 @@ public:
 		for (unsigned int i = 0; i < this->getMaximumDumpLength(); i++) {
 			if (i < parameters.size()) {
 				ss << "Parameter[" << setw(4) << setfill('0') << i << "]    = 0x" << hex << setw(2) << setfill('0')
-						<< (unsigned int)parameters[i] << dec << endl;
+						<< (unsigned int) parameters[i] << dec << endl;
 			} else {
 				break;
 			}

@@ -11,21 +11,21 @@
 #include <exception>
 #include <string>
 
-class SMCPException : public std::exception {
+class SMCPException: public std::exception {
 private:
 	std::string message;
 public:
-	SMCPException(std::string message){
-		this->message=message;
+	SMCPException(std::string message) {
+		this->message = message;
 	}
-	virtual ~SMCPException() throw(){
+	virtual ~SMCPException() throw () {
 
 	}
 public:
-	std::string getMessage(){
+	std::string getMessage() {
 		return message;
 	}
-	const char *what() const throw(){
+	const char *what() const throw () {
 		return message.c_str();
 	}
 };
