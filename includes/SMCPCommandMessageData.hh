@@ -44,7 +44,7 @@ public:
 		ss << dec;
 
 		ss << "=== Command Message Data ===" << endl;
-		ss << "OperationID        = " << hex << setw(4) << setfill('0') << (unsigned int) (operationID[0] * 0x100
+		ss << "OperationID        = 0x" << hex << setw(4) << setfill('0') << (unsigned int) (operationID[0] * 0x100
 				+ operationID[1]) << dec << endl;
 		ss << "Parameter Length   = " << dec << parameters.size() << " bytes (decimal)" << endl;
 		for (unsigned int i = 0; i < this->getMaximumDumpLength(); i++) {

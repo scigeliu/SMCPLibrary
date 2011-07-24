@@ -50,7 +50,7 @@ public:
 				- SMCPCommandMessageHeader::HeaderLength);
 	}
 
-	void interpretAsCommandMessage(std::vector<unsigned char> data) {
+	void interpretAsCommandMessage(std::vector<unsigned char>& data) {
 		if (data.size() != 0) {
 			interpretAsCommandMessage(&(data[0]), data.size());
 		}
