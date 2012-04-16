@@ -46,6 +46,7 @@ public:
 		}
 
 		header->setMessageHeader(data);
+		((SMCPCommandMessageData*)(this->data))->setCommandTypeID(((SMCPCommandMessageHeader*)header)->getCommandTypeID());
 		this->data->setMessageData(data + SMCPCommandMessageHeader::HeaderLength, length
 				- SMCPCommandMessageHeader::HeaderLength);
 	}
@@ -85,13 +86,24 @@ public:
 		delete this->data;
 		this ->data = data;
 	}
+
+public:
+	void setCommandTypeID(std::bitset<4> commandTypeID) {
+		((SMCPCommandMessageHeader*)header)->setCommandTypeID(commandTypeID);
+		((SMCPCommandMessageData*)data)->setCommandTypeID(commandTypeID);
+	}
+
+	void setCommandTypeID(std::string value) {
+		((SMCPCommandMessageHeader*)header)->setCommandTypeID(value);
+		((SMCPCommandMessageData*)data)->setCommandTypeID(value);
+	}
 };
 
 class SMCPActionCommandMessage: public SMCPCommandMessage {
 public:
 	SMCPActionCommandMessage() :
 		SMCPCommandMessage() {
-		this->getMessageHeader()->setCommandTypeID(SMCPCommandTypeID::ActionCommand);
+		this->setCommandTypeID(SMCPCommandTypeID::ActionCommand);
 	}
 };
 
@@ -99,7 +111,7 @@ class SMCPGetCommandMessage: public SMCPCommandMessage {
 public:
 	SMCPGetCommandMessage() :
 		SMCPCommandMessage() {
-		this->getMessageHeader()->setCommandTypeID(SMCPCommandTypeID::GetCommand);
+		this->setCommandTypeID(SMCPCommandTypeID::GetCommand);
 	}
 };
 
@@ -107,7 +119,7 @@ class SMCPMemoryLoadCommandMessage: public SMCPCommandMessage {
 public:
 	SMCPMemoryLoadCommandMessage() :
 		SMCPCommandMessage() {
-		this->getMessageHeader()->setCommandTypeID(SMCPCommandTypeID::MemoryLoadCommand);
+		this->setCommandTypeID(SMCPCommandTypeID::MemoryLoadCommand);
 	}
 };
 
@@ -115,7 +127,7 @@ class SMCPMemoryDumpCommandMessage: public SMCPCommandMessage {
 public:
 	SMCPMemoryDumpCommandMessage() :
 		SMCPCommandMessage() {
-		this->getMessageHeader()->setCommandTypeID(SMCPCommandTypeID::MemoryDumpCommand);
+		this->setCommandTypeID(SMCPCommandTypeID::MemoryDumpCommand);
 	}
 };
 
