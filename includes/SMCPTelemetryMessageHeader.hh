@@ -88,8 +88,8 @@ public:
 			break;
 		}
 
-		ss << "MessageLength      = " << (unsigned int) (messageLength[2] * 0x10000 + messageLength[1] * 0x100
-				+ messageLength[0]) << " bytes (decial)" << std::right << endl;
+		ss << "MessageLength      = " << (unsigned int) (messageLength[0] * 0x10000 + messageLength[1] * 0x100
+				+ messageLength[1]) << " bytes (decimal)" << std::right << endl;
 
 		ss << "lowerFOID          = 0x" << hex << setw(2) << setfill('0') << (unsigned int) lowerFOID << dec << endl;
 		return ss.str();
@@ -198,6 +198,12 @@ public:
 
 	void setLowerFOID(unsigned char lowerFOID) {
 		this->lowerFOID = lowerFOID;
+	}
+
+	void setMessageLength(uint32_t messageLength) {
+		this->messageLength[0]=messageLength/0x010000;
+		this->messageLength[1]=(messageLength%0x010000)/0x0100;
+		this->messageLength[2]=messageLength%0x0100;
 	}
 
 	void setMessageLength(std::vector<unsigned char> messageLength) {

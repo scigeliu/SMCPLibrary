@@ -50,6 +50,13 @@ public:
 	}
 
 public:
+	virtual std::vector<unsigned char> getAsByteVector() {
+		setMessageLengthAuto();
+		return ((SMCPMessage*)this)->SMCPMessage::getAsByteVector();
+	}
+
+
+public:
 	void interpretAsTelemetryMessage(unsigned char* data, unsigned int length) {
 		if (length < SMCPTelemetryMessageHeader::HeaderLength + 1) {
 			throw SMCPException("size error");

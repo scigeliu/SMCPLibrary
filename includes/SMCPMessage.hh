@@ -28,7 +28,7 @@ public:
 	SMCPMessageData* data;
 
 public:
-	std::vector<unsigned char> getAsByteVector() {
+	virtual std::vector<unsigned char> getAsByteVector() {
 		std::vector<unsigned char> result;
 		std::vector<unsigned char> headerVector = header->getAsByteVector();
 		std::vector<unsigned char> dataVector = data->getAsByteVector();

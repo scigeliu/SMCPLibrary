@@ -14,6 +14,10 @@
 #include "SMCPException.hh"
 
 class SMCPCommandMessageData: public SMCPMessageData {
+public:
+	static const size_t MaximumParameterLength = 1006;
+	static const size_t MaximumLoadDataLength = 1004;
+
 private:
 	std::bitset<4> commandTypeID; //4 bit (not appear in the byte field)
 
@@ -37,14 +41,39 @@ public:
 	SMCPCommandMessageData() {
 		this->setSMCPMessageType(SMCPMessageType::CommandMessage);
 		this->setMaximumDumpLength(DefaultMaximumDumpLength);
+		initializeFieldVariables();
 	}
 
 	virtual ~SMCPCommandMessageData() {
 	}
 
 public:
+	void initializeFieldVariables() {
+		operationID[0] = 0x00;
+		operationID[1] = 0x00;
+		parameters.clear();
+
+		attributeID[0] = 0x00;
+		attributeID[1] = 0x00;
+
+		startAddress[0] = 0x00;
+		startAddress[1] = 0x00;
+		startAddress[2] = 0x00;
+		startAddress[3] = 0x00;
+
+		loadData.clear();
+
+		nOfDumps[0] = 0;
+		nOfDumps[1] = 0;
+
+		dumpLength[0] = 0x00;
+		dumpLength[1] = 0x00;
+		dumpLength[2] = 0x00;
+	}
+
+public:
 	std::string toString() {
-		switch (commandTypeID) {
+		switch (commandTypeID.to_ulong()) {
 		case SMCPCommandTypeID::ActionCommand:
 			return toStringActionCommand();
 			break;
@@ -101,8 +130,7 @@ private:
 		using std::setfill;
 		ss << dec;
 		ss << "=== Command Message Data ===" << endl;
-		ss << "AttributeID        = 0x" << hex << setw(4) << setfill('0')
-				<< getAttributeID() << dec << endl;
+		ss << "AttributeID        = 0x" << hex << setw(4) << setfill('0') << getAttributeID() << dec << endl;
 		return ss.str();
 	}
 
@@ -116,11 +144,13 @@ private:
 		using std::setfill;
 		ss << dec;
 		ss << "=== Command Message Data ===" << endl;
-		ss << "AttributeID        = 0x" << hex << setw(4) << setfill('0')
-						<< getAttributeID() << dec << endl;
-		ss << "Number of dumps    = " << dec << getNOfDumps().to_ulong()+1 << "(" << getNOfDumps().to_string() << ")" << endl;
-		ss << "Start Address      = 0x" << hex << right << setw(8) << setfill('0')  << (uint32_t)getStartAddress() << endl;
-		ss << "Dump Length        = 0x" << hex << right << setw(6) << setfill('0')  << (uint32_t)getDumpLength() << endl;
+		ss << "AttributeID        = 0x" << hex << setw(4) << setfill('0') << getAttributeID() << dec << endl;
+		ss << "Number of dumps    = " << dec << getNOfDumps().to_ulong() + 1 << "(" << getNOfDumps().to_string() << ")"
+				<< endl;
+		ss << "Start Address      = 0x" << hex << right << setw(8) << setfill('0') << (uint32_t) getStartAddress()
+				<< endl;
+		ss << "Dump Length        = 0x" << hex << right << setw(6) << setfill('0') << (uint32_t) getDumpLength()
+				<< endl;
 		return ss.str();
 	}
 
@@ -134,10 +164,11 @@ private:
 		using std::setfill;
 		ss << dec;
 		ss << "=== Command Message Data ===" << endl;
-		ss << "Start Address      = 0x" << hex << right << setw(8) << setfill('0')  << (uint32_t)getStartAddress() << endl;
+		ss << "Start Address      = 0x" << hex << right << setw(8) << setfill('0') << (uint32_t) getStartAddress()
+				<< endl;
 		ss << "Load Data Length   = " << dec << loadData.size() << " bytes (decimal)" << endl;
 		for (unsigned int i = 0; i < this->getMaximumDumpLength(); i++) {
-			if (i < parameters.size()) {
+			if (i < loadData.size()) {
 				ss << "Load Data[" << setw(4) << setfill('0') << i << "]    = 0x" << hex << setw(2) << setfill('0')
 						<< (unsigned int) (loadData[i]) << dec << endl;
 			} else {
@@ -151,10 +182,9 @@ private:
 		return ss.str();
 	}
 
-
 public:
 	std::vector<unsigned char> getAsByteVector() {
-		switch (commandTypeID) {
+		switch (commandTypeID.to_ulong()) {
 		case SMCPCommandTypeID::ActionCommand:
 			return getAsByteVectorActionCommand();
 			break;
@@ -168,10 +198,10 @@ public:
 			return getAsByteVectorMemoryLoadCommand();
 			break;
 		default:
-			return std::vector<unsigned char>;
+			return std::vector<unsigned char>();
 			break;
 		}
-		return std::vector<unsigned char>;
+		return std::vector<unsigned char>();
 	}
 
 private:
@@ -213,21 +243,20 @@ private:
 		return result;
 	}
 
-
 public:
 	void setMessageData(unsigned char *data, unsigned int length) throw (SMCPException) {
-		switch (commandTypeID) {
+		switch (commandTypeID.to_ulong()) {
 		case SMCPCommandTypeID::ActionCommand:
-			return setMessageDataActionCommand(data,length);
+			return setMessageDataActionCommand(data, length);
 			break;
 		case SMCPCommandTypeID::GetCommand:
-			return setMessageDataGetCommand(data,length);
+			return setMessageDataGetCommand(data, length);
 			break;
 		case SMCPCommandTypeID::MemoryDumpCommand:
-			return setMessageDataMemoryDumpCommand(data,length);
+			return setMessageDataMemoryDumpCommand(data, length);
 			break;
 		case SMCPCommandTypeID::MemoryLoadCommand:
-			return setMessageDataMemoryLoadCommand(data,length);
+			return setMessageDataMemoryLoadCommand(data, length);
 			break;
 		default:
 			return;
@@ -236,7 +265,7 @@ public:
 	}
 
 	void setMessageData(std::vector<unsigned char> data) throw (SMCPException) {
-		switch (commandTypeID) {
+		switch (commandTypeID.to_ulong()) {
 		case SMCPCommandTypeID::ActionCommand:
 			return setMessageDataActionCommand(data);
 			break;
@@ -280,7 +309,7 @@ private:
 		if (length < 8) {
 			throw SMCPException("size error");
 		}
-		nOfDumps=std::bitset<2>(data[0]);
+		nOfDumps = std::bitset<2>(data[0]);
 		startAddress[0] = data[1];
 		startAddress[1] = data[2];
 		startAddress[2] = data[3];
@@ -303,7 +332,6 @@ private:
 			loadData.push_back(data[i]);
 		}
 	}
-
 
 private:
 	void setMessageDataActionCommand(std::vector<unsigned char> data) throw (SMCPException) {
@@ -462,7 +490,14 @@ public:
 	}
 
 	void setLoadData(std::vector<unsigned char>& loadData) {
-		this->loadData = loadData;
+		if (MaximumLoadDataLength < loadData.size()) {
+			this->loadData.resize(MaximumLoadDataLength);
+			for (size_t i = 0; i < MaximumLoadDataLength; i++) {
+				this->loadData[i] = loadData[i];
+			}
+		} else {
+			this->loadData = loadData;
+		}
 	}
 
 	void setNOfDumps(std::bitset<2> nOfDumps) {
@@ -470,7 +505,7 @@ public:
 	}
 
 	void setNOfDumps(std::string nOfDumps) {
-		this->nOfDumps = SMCPUtility::createBitset<4>(nOfDumps);
+		this->nOfDumps = SMCPUtility::createBitset<2>(nOfDumps);
 	}
 
 	void setStartAddress(unsigned char* startAddress) {
