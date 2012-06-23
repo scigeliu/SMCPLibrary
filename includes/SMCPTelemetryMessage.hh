@@ -87,7 +87,7 @@ public:
 public:
 	void setMessageLengthAuto() {
 		unsigned char messageLength[3];
-		unsigned int length = 4; //header
+		unsigned int length = SMCPMessageHeader::HeaderLength;
 		length += ((SMCPTelemetryMessageData*) data)->getLength();
 		messageLength[0] = (length % 0x1000000) / 0x10000;
 		messageLength[1] = (length % 0x10000) / 0x100;

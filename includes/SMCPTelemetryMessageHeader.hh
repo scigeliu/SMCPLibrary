@@ -32,9 +32,6 @@ private:
 	unsigned char lowerFOID; //1 octet
 
 public:
-	static const unsigned int HeaderLength = 0x07;
-
-public:
 	static const unsigned int ReservedFieldValue = 0x00;
 
 public:

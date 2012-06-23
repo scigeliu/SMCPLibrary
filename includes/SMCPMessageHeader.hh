@@ -17,6 +17,9 @@
 #include "SMCPException.hh"
 
 class SMCPMessageHeader {
+public:
+	static const unsigned int HeaderLength = 0x05;
+
 private:
 	int smcpMessageType;
 
