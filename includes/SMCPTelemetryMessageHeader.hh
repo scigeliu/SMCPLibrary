@@ -12,42 +12,44 @@
 #include "SMCPMessageHeader.hh"
 #include "SMCPException.hh"
 
-class SMCPTelemetryTypeID {
-public:
-	enum {
-		ValueTelemetry = 0x00, //0000b
-		NotificationTelemetry = 0x01, //0001b
-		AcknowledgeTelemetry = 0x02, //0010b
-		MemoryDumpTelemetry = 0x05, //0101b
-		Undefined = 0xffff
-	};
-};
-
+/** A class that represents SMCP Telemetry Message Header.
+ * Extends SMCPMessageHeader.
+ */
 class SMCPTelemetryMessageHeader: public SMCPMessageHeader {
 private:
 	//Telemetry Message Header
-	std::bitset<2> reserved;//2 bit
+	std::bitset<2> reserved; //2 bit
 	std::bitset<4> telemetryTypeID; //4 bit
-	unsigned char messageLength[3]; //3 octets
-	unsigned char lowerFOID; //1 octet
+	uint8_t messageLength[3]; //3 octets
+	uint8_t lowerFOID; //1 octet
 
 public:
-	static const unsigned int HeaderLength = 0x07;
+	static const size_t HeaderLength = 0x07;
 
 public:
-	static const unsigned int ReservedFieldValue = 0x00;
+	static const size_t ReservedFieldValue = 0x00;
 
 public:
+	/** Constructor. */
 	SMCPTelemetryMessageHeader() {
 		this->setDefaultValues();
+		lowerFOID = 0x00;
+		messageLength[0] = 0x00;
+		messageLength[1] = 0x00;
+		messageLength[2] = 0x00;
 		reserved.reset();
 	}
 
+public:
+	/** Destructor. */
 	virtual ~SMCPTelemetryMessageHeader() {
 
 	}
 
 public:
+	/** Returns string dump of this instance.
+	 * @returns string dump of this packet.
+	 */
 	std::string toString() {
 		std::stringstream ss;
 		using std::endl;
@@ -88,21 +90,27 @@ public:
 			break;
 		}
 
-		ss << "MessageLength      = " << (unsigned int) (messageLength[2] * 0x10000 + messageLength[1] * 0x100
-				+ messageLength[0]) << " bytes (decial)" << std::right << endl;
+		ss << "MessageLength      = "
+				<< (uint32_t) (messageLength[2] * 0x10000 + messageLength[1] * 0x100 + messageLength[0])
+				<< " bytes (decial)" << std::right << endl;
 
-		ss << "lowerFOID          = 0x" << hex << setw(2) << setfill('0') << (unsigned int) lowerFOID << dec << endl;
+		ss << "lowerFOID          = 0x" << hex << setw(2) << setfill('0') << (uint32_t) lowerFOID << dec << endl;
 		return ss.str();
 	}
 
 public:
-	std::vector<unsigned char> getAsByteVector() {
-		std::vector<unsigned char> result;
+	/** Returns packet content as a vector of uint8_t.
+	 * Packet content will be dynamically generated every time
+	 * when this method is invoked.
+	 * @return a uint8_t vector that contains packet content
+	 */
+	std::vector<uint8_t> getAsByteVector() {
+		std::vector<uint8_t> result;
 		result.push_back( //
 				reserved.to_ulong() * 0x40 //
-						+ smcpVersion.to_ulong() * 0x10 //
-						+ telemetryTypeID.to_ulong() //
-		);
+				+ smcpVersion.to_ulong() * 0x10 //
+				+ telemetryTypeID.to_ulong() //
+						);
 		result.push_back(messageLength[0]);
 		result.push_back(messageLength[1]);
 		result.push_back(messageLength[2]);
@@ -111,10 +119,11 @@ public:
 	}
 
 public:
-	/** param[in] data a byte array.
+	/** Sets header field values based on a provided uint8_t array.
+	 * @param[in] data uint8_t array which contains Telemetry Message Header.
 	 */
-	void setMessageHeader(unsigned char* data) {
-		unsigned int index = 0;
+	void setMessageHeader(uint8_t* data) {
+		size_t index = 0;
 		reserved.set(1, (data[0] & 0x80) >> 8 /* 1000 0000 */);
 		reserved.set(0, (data[0] & 0x40) >> 6 /* 0100 0000 */);
 		smcpVersion.set(1, (data[0] & 0x20) >> 5 /* 0010 0000 */);
@@ -124,13 +133,17 @@ public:
 		telemetryTypeID.set(1, (data[0] & 0x02) >> 1 /* 0000 0010 */);
 		telemetryTypeID.set(0, data[0] & 0x01 /* 0000 0001 */);
 		index += 1;
-		for (unsigned int i = 0; index < 4; index++, i++) {
+		for (size_t i = 0; index < 4; index++, i++) {
 			messageLength[i] = data[index];
 		}
 		lowerFOID = data[index];
 	}
 
-	void setMessageHeader(std::vector<unsigned char> data) throw (SMCPException) {
+public:
+	/** Sets header field values based on a provided uint8_t vector.
+	 * @param[in] data uint8_t vector which contains Telemetry Message Header.
+	 */
+	void setMessageHeader(std::vector<uint8_t>& data) throw (SMCPException) {
 		if (data.size() == HeaderLength) {
 			setMessageHeader(&(data[0]));
 		} else {
@@ -139,14 +152,23 @@ public:
 	}
 
 public:
+	/** Checks if a provided SMCPMessageHeader instance has the same content
+	 * as this instance does.
+	 * @param[in] message SMCPMessageHeader instance.
+	 */
 	bool equals(SMCPMessageHeader* header) {
 		if (header->getSMCPMessageType() == SMCPMessageType::TelemetryMessage) {
-			equals(*(SMCPTelemetryMessageHeader*) header);
+			return equals(*(SMCPTelemetryMessageHeader*) header);
 		} else {
 			return false;
 		}
 	}
 
+public:
+	/** Checks if a provided SMCPMessageHeader instance has the same content
+	 * as this instance does.
+	 * @param[in] message SMCPMessageHeader instance.
+	 */
 	bool equals(SMCPTelemetryMessageHeader& header) {
 		if (reserved != header.getReserved()) {
 			return false;
@@ -157,7 +179,7 @@ public:
 		if (telemetryTypeID != header.getTelemetryTypeID()) {
 			return false;
 		}
-		unsigned char* pointer = header.getMessageLengthAsPointer();
+		uint8_t* pointer = header.getMessageLengthAsPointer();
 		if (messageLength[0] != pointer[0] || messageLength[1] != pointer[1] || messageLength[2] != pointer[2]) {
 			return false;
 		}
@@ -168,39 +190,46 @@ public:
 	}
 
 public:
-	unsigned char getLowerFOID() const {
+	uint8_t getLowerFOID() const {
 		return lowerFOID;
 	}
 
-	unsigned char* getMessageLengthAsPointer() const {
-		return (unsigned char*) messageLength;
+public:
+	uint8_t* getMessageLengthAsPointer() const {
+		return (uint8_t*) messageLength;
 	}
 
-	std::vector<unsigned char> getMessageLength() const {
-		std::vector<unsigned char> messageLength;
+public:
+	std::vector<uint8_t> getMessageLength() const {
+		std::vector<uint8_t> messageLength;
 		messageLength.push_back(this->messageLength[0]);
 		messageLength.push_back(this->messageLength[1]);
 		messageLength.push_back(this->messageLength[2]);
 		return messageLength;
 	}
 
+public:
 	std::bitset<2> getReserved() const {
 		return reserved;
 	}
 
+public:
 	std::bitset<2> getSMCPVersion() const {
 		return smcpVersion;
 	}
 
+public:
 	std::bitset<4> getTelemetryTypeID() const {
 		return telemetryTypeID;
 	}
 
-	void setLowerFOID(unsigned char lowerFOID) {
+public:
+	void setLowerFOID(uint8_t lowerFOID) {
 		this->lowerFOID = lowerFOID;
 	}
 
-	void setMessageLength(std::vector<unsigned char> messageLength) {
+public:
+	void setMessageLength(std::vector<uint8_t>& messageLength) {
 		if (messageLength.size()) {
 			this->messageLength[0] = messageLength[0];
 			this->messageLength[1] = messageLength[1];
@@ -208,22 +237,32 @@ public:
 		}
 	}
 
-	void setMessageLength(unsigned char* messageLength) {
+public:
+	void setMessageLength(uint8_t* messageLength) {
 		this->messageLength[0] = messageLength[0];
 		this->messageLength[1] = messageLength[1];
 		this->messageLength[2] = messageLength[2];
 	}
 
-	void setReserved(std::bitset<2> reserved) {
+public:
+	void setReserved(std::bitset<2>& reserved) {
 		this->reserved = reserved;
 	}
 
-	void setSMCPVersion(std::bitset<2> smcpVersion) {
+public:
+	void setSMCPVersion(std::bitset<2>& smcpVersion) {
 		this->smcpVersion = smcpVersion;
 	}
 
-	void setTelemetryTypeID(std::bitset<4> telemetryTypeID) {
+public:
+	void setTelemetryTypeID(std::bitset<4>& telemetryTypeID) {
 		this->telemetryTypeID = telemetryTypeID;
+	}
+
+public:
+	void setTelemetryTypeID(uint8_t telemetryTypeID) {
+		std::bitset<4> bits((uint32_t)telemetryTypeID);
+		this->telemetryTypeID = bits;
 	}
 };
 

@@ -12,8 +12,17 @@
 #include <string>
 #include "SMCPException.hh"
 
+/** A class that collects utility methods used in the SMCP Library.
+ */
 class SMCPUtility {
 public:
+	/** Converts string to std::bitset<n>.
+	 * Example usage:
+	 * @code
+	 	 std::string str="010100";
+	 	 std::bitset<6> bits=SMCPUtility::createBitset<6>(str);
+	 * @endcode
+	 */
 	template<int n>
 	static std::bitset<n> createBitset(std::string str) throw (SMCPException) {
 		std::bitset<n> result;
@@ -36,4 +45,5 @@ public:
 		return result;
 	}
 };
+
 #endif /* SMCPUTILITY_HH_ */

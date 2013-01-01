@@ -15,45 +15,35 @@
 #include "SMCPException.hh"
 #include "SMCPUtility.hh"
 
-class SMCPAcknowledgeRequest {
-public:
-	enum {
-		NoAcknowledgeTelemetry = 0x00, //00b
-		RequestAcknowledgeTelemetry = 0x01, //01b
-		Undefined = 0xffff
-	};
-};
-
-class SMCPCommandTypeID {
-public:
-	enum {
-		ActionCommand = 0x00, //0000b
-		GetCommand = 0x01, //0001b
-		MemoryLoadCommand = 0x04, //0100b
-		MemoryDumpCommand = 0x05, //0101b
-		Undefined = 0xffff
-	};
-};
+/** A class that represents SMCP Command Message Header.
+ * Extends SMCPMessageHeader.
+ */
 class SMCPCommandMessageHeader: public SMCPMessageHeader {
 private:
 	//Command Message Header section
 	std::bitset<2> acknowledgeRequest;//2 bit
 	std::bitset<4> commandTypeID; //4 bit
-	unsigned char lowerFOID; //1 octet
+	uint8_t lowerFOID; //1 octet
 
 public:
 	static const unsigned int HeaderLength = 0x02; //2bytes
 
 public:
+	/** Constructor. */
 	SMCPCommandMessageHeader() {
 		this->setDefaultValues();
 	}
 
+public:
+	/** Denstructor. */
 	virtual ~SMCPCommandMessageHeader() {
 
 	}
 
 public:
+	/** Returns string dump of this instance.
+	 * @returns string dump of this packet.
+	 */
 	std::string toString() {
 		std::stringstream ss;
 		using std::endl;
@@ -102,19 +92,27 @@ public:
 	}
 
 public:
-	std::vector<unsigned char> getAsByteVector() {
-		std::vector<unsigned char> result;
+	/** Returns packet content as a vector of uint8_t.
+	 * Packet content will be dynamically generated every time
+	 * when this method is invoked.
+	 * @return a uint8_t vector that contains packet content
+	 */
+	std::vector<uint8_t> getAsByteVector() {
+		std::vector<uint8_t> result;
 		result.push_back( //
-				((unsigned char) acknowledgeRequest.to_ulong()) * 0x40 //
-						+ ((unsigned char) smcpVersion.to_ulong()) * 0x10 //
-						+ (unsigned char) (commandTypeID.to_ulong()) //
+				((uint8_t) acknowledgeRequest.to_ulong()) * 0x40 //
+						+ ((uint8_t) smcpVersion.to_ulong()) * 0x10 //
+						+ (uint8_t) (commandTypeID.to_ulong()) //
 		);
 		result.push_back(lowerFOID);
 		return result;
 	}
 
 public:
-	void setMessageHeader(unsigned char* data) {
+	/** Sets header field values based on a provided uint8_t array.
+	 * @param[in] data uint8_t array which contains 2-byte Messaeg Header.
+	 */
+	void setMessageHeader(uint8_t* data) {
 		acknowledgeRequest.set(1, (data[0] & 0x80) >> 8 /* 1000 0000 */);
 		acknowledgeRequest.set(0, (data[0] & 0x40) >> 6 /* 0100 0000 */);
 		smcpVersion.set(1, (data[0] & 0x20) >> 5 /* 0010 0000 */);
@@ -126,7 +124,11 @@ public:
 		lowerFOID = data[1];
 	}
 
-	void setMessageHeader(std::vector<unsigned char> data) throw (SMCPException) {
+public:
+	/** Sets header field values based on a provided uint8_t array.
+	 * @param[in] data uint8_t vector which contains 2-byte Messaeg Header.
+	 */
+	void setMessageHeader(std::vector<uint8_t>& data) throw (SMCPException) {
 		if (data.size() == HeaderLength) {
 			setMessageHeader(&(data[0]));
 		} else {
@@ -135,14 +137,23 @@ public:
 	}
 
 public:
+	/** Checks if a provided SMCPMessageHeader instance has the same content
+	 * as this instance does.
+	 * @param[in] message SMCPMessageHeader instance.
+	 */
 	bool equals(SMCPMessageHeader* header) {
 		if (header->getSMCPMessageType() == SMCPMessageType::CommandMessage) {
-			equals(*(SMCPCommandMessageHeader*) header);
+			return equals(*(SMCPCommandMessageHeader*) header);
 		} else {
 			return false;
 		}
 	}
 
+public:
+	/** Checks if a provided SMCPMessageHeader instance has the same content
+	 * as this instance does.
+	 * @param[in] message SMCPMessageHeader instance.
+	 */
 	bool equals(SMCPCommandMessageHeader& header) {
 		if (acknowledgeRequest != header.getAcknowledgeRequest()) {
 			return false;
@@ -160,19 +171,19 @@ public:
 	}
 
 public:
-	std::bitset<2> getAcknowledgeRequest() const {
+	std::bitset<2>& getAcknowledgeRequest() {
 		return acknowledgeRequest;
 	}
 
-	std::bitset<4> getCommandTypeID() const {
+	std::bitset<4>& getCommandTypeID() {
 		return commandTypeID;
 	}
 
-	unsigned char getLowerFOID() const {
+	uint8_t getLowerFOID() {
 		return lowerFOID;
 	}
 
-	std::bitset<2> getSMCPVersion() const {
+	std::bitset<2> getSMCPVersion() {
 		return smcpVersion;
 	}
 
@@ -192,7 +203,7 @@ public:
 		this->commandTypeID = SMCPUtility::createBitset<4>(value);
 	}
 
-	void setLowerFOID(unsigned char lowerFOID) {
+	void setLowerFOID(uint8_t lowerFOID) {
 		this->lowerFOID = lowerFOID;
 	}
 
