@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>SMCP Library by yuasatakayuki</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/yuasatakayuki/SMCPLibrary">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/yuasatakayuki/SMCPLibrary/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/yuasatakayuki/SMCPLibrary/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>SMCP Library</h1>
+          <p>Manipulates SMCP packets</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/yuasatakayuki">yuasatakayuki</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h2>Overview</h2>
+
+<p>SMCP Library is a header-only C++ class library
+that manipulates packets in the SMCP SpacePacket format.</p>
+
+<p>See:</p>
+
+<ul>
+<li><a href="http://www.c-soda.isas.jaxa.jp/sog/gstos/file4/SMCP09.pdf">http://www.c-soda.isas.jaxa.jp/sog/gstos/file4/SMCP09.pdf</a></li>
+</ul><p>Related libraries:</p>
+
+<ul>
+<li><a href="http://yuasatakayuki.github.com/CCSDSLibrary/">CCSDS SpacePacket Library</a></li>
+<li><a href="https://github.com/yuasatakayuki/SMCPLibrary">SMCP Library</a></li>
+</ul><h2>Installation and Build</h2>
+
+<p>Git repository is hosted on the github.com.
+To install the latest source tree, execute git clone like below.</p>
+
+<div class="highlight"><pre><span class="n">git</span> <span class="n">clone</span> <span class="nl">https:</span><span class="c1">//github.com/yuasatakayuki/SMCPLibrary</span>
+</pre></div>
+
+<p>The library does not need to be pre-compiled since this consists
+only from header files. Just include SDTPLibrary/includes/SMCP.hh
+and provide a header search path to your compiler.</p>
+
+<p>For example, in a source file,</p>
+
+<div class="highlight"><pre><span class="cp">#include "SMCP.hh"</span>
+<span class="p">...</span><span class="n">your</span> <span class="n">source</span><span class="p">...</span>
+</pre></div>
+
+<p>and compile it with a -I flag,</p>
+
+<pre><code>g++ -I/path/to/SMCPLibrary/includes your_application.cc -o your_application
+</code></pre>
+
+<h2>Classes</h2>
+
+<p>Users mainly interface with instances of the SMCPMessage class, or its derived classes
+SMCPCommandMessage and SMCPTelemetryMessage. The SMCPCommandMessage and SMCPTelemetryMessage classes have concrete classes:</p>
+
+<ul>
+<li>SMCPActionCommandMessage</li>
+<li>SMCPGetCommandMessage</li>
+<li>SMCPMemoryLoadCommandMessage</li>
+<li>SMCPMemoryDumpCommandMessage
+and</li>
+<li>SMCPValueTelemetryMessage</li>
+<li>SMCPNotificationTelemetryMessage</li>
+<li>SMCPAcknowledgeTelemetryMessage</li>
+<li>SMCPMemoryDumpTelemetryMessage.</li>
+</ul><p>SMCPMessage internally contains</p>
+
+<ul>
+<li>SMCPMessageHeader</li>
+<li>SMCPMessageData</li>
+</ul><p>See <a href="annotated.html">Class List</a> for complete API reference.</p>
+
+<h2>Example Usages</h2>
+
+<h3>Packet creation</h3>
+
+<div class="highlight"><pre><span class="n">size_t</span> <span class="n">DataSize</span> <span class="o">=</span> <span class="mi">1002</span><span class="p">;</span>
+<span class="n">uint8_t</span><span class="o">*</span> <span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">uint8_t</span><span class="p">[</span><span class="n">DataSize</span><span class="p">];</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">DataSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">buffer</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint8_t</span><span class="p">)</span> <span class="n">time</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">SMCPValueTelemetryMessage</span><span class="o">*</span> <span class="n">smcpValueTelemetryMessage</span><span class="p">;</span>
+<span class="n">smcpValueTelemetryMessage</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SMCPValueTelemetryMessage</span><span class="p">();</span>
+<span class="n">smcpValueTelemetryMessage</span><span class="o">-&gt;</span><span class="n">getMessageHeader</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setLowerFOID</span><span class="p">(</span><span class="n">lowerFOID</span><span class="p">);</span>
+<span class="n">smcpValueTelemetryMessage</span><span class="o">-&gt;</span><span class="n">getMessageData</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setAttributeID</span><span class="p">(</span><span class="n">attributeID</span><span class="p">);</span>
+<span class="n">smcpValueTelemetryMessage</span><span class="o">-&gt;</span><span class="n">getMessageData</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setAttributeValues</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">DataSize</span><span class="p">);</span>
+<span class="n">smcpValueTelemetryMessage</span><span class="o">-&gt;</span><span class="n">setMessageLengthAuto</span><span class="p">();</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">uint8_t</span><span class="o">&gt;</span> <span class="n">smcpByteArray</span> <span class="o">=</span> <span class="n">smcpValueTelemetryMessage</span><span class="o">-&gt;</span><span class="n">getAsByteVector</span><span class="p">();</span>
+</pre></div>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
