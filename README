@@ -1,5 +1,7 @@
 The open-source SMCP Library
 
+See http://yuasatakayuki.github.com/SMCPLibrary/ for detailed information.
+
 ==Overview==
 This library provides a set of C++ classes for generating/interpreting
 data packets formatted according to the Spacecraft Monitoring and Control
