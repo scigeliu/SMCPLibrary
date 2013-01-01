@@ -7,6 +7,8 @@ Protocol (SMCP). For details of the SMCP, please refer a pdf document available
 from the url below:
 http://www.c-soda.isas.jaxa.jp/sog/gstos/file4/SMCP09.pdf
 
+Github page is:
+http://yuasatakayuki.github.com/SMCPLibrary/
 
 ==Install==
 Download the archive or checkout the git repository, and place the "SMCPLibrary"
@@ -28,7 +30,6 @@ generate an API reference in HTML and RTF.
  cd SMCPLibrary/documents
  doxygen Doxygen
  open html/index.html
- 
 
 ==History==
 20110605 first version (Takayuki Yuasa)
