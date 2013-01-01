@@ -17,8 +17,8 @@
  * - http://www.c-soda.isas.jaxa.jp/sog/gstos/file4/SMCP09.pdf
  *
  * Related libraries:
- * - <a href="https://github.com/yuasatakayuki/CCSDSLibrary">CCSDS SpacePacket Library</a>
- * - <a href="https://github.com/yuasatakayuki/SMCPLibrary">SMCP Library</a>
+ * - <a href="http://yuasatakayuki.github.com/CCSDSLibrary/">CCSDS SpacePacket Library</a>
+ * - <a href="https://yuasatakayuki.github.com/SMCPLibrary">SMCP Library</a>
  *
  * @section install Installation and Build
  * Git repository is hosted on the github.com.
