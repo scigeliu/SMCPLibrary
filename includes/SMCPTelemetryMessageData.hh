@@ -169,6 +169,14 @@ public:
 	}
 
 public:
+	uint16_t getAttributeID() {
+		uint16_t aid = 0;
+		aid += (0x001*attributeID[1]);
+		aid += (0x100*attributeID[0]);
+		return aid;
+	}
+
+public:
 	std::vector<uint8_t> getAttributeValues() const {
 		return attributeValues;
 	}
