@@ -133,7 +133,7 @@ public:
 		telemetryTypeID.set(1, (data[0] & 0x02) >> 1 /* 0000 0010 */);
 		telemetryTypeID.set(0, data[0] & 0x01 /* 0000 0001 */);
 		index += 1;
-		for (size_t i = 0; index < 4; index++, i++) {
+		for (size_t i = 2; index < 4; index++, i--) {
 			messageLength[i] = data[index];
 		}
 		lowerFOID = data[index];

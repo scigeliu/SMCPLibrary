@@ -67,8 +67,10 @@ public:
 		}
 
 		header->setMessageHeader(data);
-		this->data->setMessageData(data + SMCPTelemetryMessageHeader::HeaderLength, length
-				- SMCPTelemetryMessageHeader::HeaderLength);
+//		this->data->setMessageData(data + SMCPTelemetryMessageHeader::HeaderLength, length
+//				- SMCPTelemetryMessageHeader::HeaderLength);
+		this->data->setMessageData(data + SMCPTelemetryMessageHeader::HeaderLength-2, length
+				- SMCPTelemetryMessageHeader::HeaderLength+2);
 	}
 
 public:
