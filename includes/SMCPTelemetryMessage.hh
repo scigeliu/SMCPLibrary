@@ -26,6 +26,9 @@
  */
 class SMCPTelemetryMessage: public SMCPMessage {
 public:
+	static const size_t SizeOfHeader=5;
+
+public:
 	/** Constructor. */
 	SMCPTelemetryMessage() :
 		SMCPMessage() {
@@ -69,8 +72,8 @@ public:
 		header->setMessageHeader(data);
 //		this->data->setMessageData(data + SMCPTelemetryMessageHeader::HeaderLength, length
 //				- SMCPTelemetryMessageHeader::HeaderLength);
-		this->data->setMessageData(data + SMCPTelemetryMessageHeader::HeaderLength-2, length
-				- SMCPTelemetryMessageHeader::HeaderLength+2);
+		this->data->setMessageData(data + SMCPTelemetryMessageHeader::HeaderLength, length
+				- SMCPTelemetryMessageHeader::HeaderLength);
 	}
 
 public:
@@ -105,7 +108,7 @@ public:
 	 */
 	void setMessageLengthAuto() {
 		uint8_t messageLength[3];
-		size_t length = 4; //header
+		size_t length = SizeOfHeader; //header
 		length += ((SMCPTelemetryMessageData*) data)->getLength();
 		messageLength[0] = (length % 0x1000000) / 0x10000;
 		messageLength[1] = (length % 0x10000) / 0x100;

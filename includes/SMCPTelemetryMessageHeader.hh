@@ -24,7 +24,7 @@ private:
 	uint8_t lowerFOID; //1 octet
 
 public:
-	static const size_t HeaderLength = 0x07;
+	static const size_t HeaderLength = 0x05;
 
 public:
 	static const size_t ReservedFieldValue = 0x00;
