@@ -8,6 +8,8 @@
 #ifndef SMCPMESSAEGTYPE_HH_
 #define SMCPMESSAEGTYPE_HH_
 
+#include <stdint.h>
+
 /** A class which collects SMCP Message Type IDs. */
 class SMCPMessageType {
 public:
